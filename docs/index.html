@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1118">
+    <title>Browser-only demo · Northstar Assessments</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/demo.js" defer></script>
+</head>
+<body class="demo-page">
+    <section id="demo-auth" class="auth-page">
+        <main class="auth-layout">
+            <section class="auth-intro" aria-labelledby="demo-brand-title">
+                <a class="brand brand-large" href="./"><span class="brand-mark" aria-hidden="true">N</span><span>Northstar<span class="brand-light"> Assessments</span></span></a>
+                <div class="auth-copy">
+                    <p class="eyebrow">Interactive browser demo</p>
+                    <h1 id="demo-brand-title">Try the whole assessment flow.</h1>
+                    <p class="muted-copy">Create a student account, build assessments, take a timed quiz, and review the results — no PHP server or database required.</p>
+                </div>
+                <div class="auth-footnote"><span class="status-dot"></span> Demo data stays in this browser</div>
+            </section>
+
+            <section class="auth-card card" aria-labelledby="demo-auth-title">
+                <div class="auth-card-heading">
+                    <p class="eyebrow" id="auth-eyebrow">Browser-only demo</p>
+                    <h2 id="demo-auth-title">Sign in to the demo</h2>
+                    <p class="subtle" id="auth-description">Use the sample administrator or create a student account.</p>
+                </div>
+                <div class="demo-note"><span class="demo-icon" aria-hidden="true">i</span><span>Sample admin <strong>admin@example.com</strong> · Password <strong>Admin@123</strong></span></div>
+                <div id="auth-message" class="alert hidden" role="alert" aria-live="polite"></div>
+                <form id="auth-form" class="form-stack" novalidate>
+                    <div id="register-name-wrap" class="hidden">
+                        <label class="field-label" for="register-name">Full name</label>
+                        <input class="text-input" id="register-name" type="text" maxlength="120" autocomplete="name" placeholder="Your name">
+                    </div>
+                    <label class="field-label" for="auth-email">Email address</label>
+                    <input class="text-input" id="auth-email" type="email" maxlength="190" autocomplete="username" required placeholder="you@example.com">
+                    <label class="field-label" for="auth-password">Password</label>
+                    <input class="text-input" id="auth-password" type="password" autocomplete="current-password" required placeholder="Enter your password">
+                    <button id="auth-submit" class="button button-primary button-full" type="submit">Sign in</button>
+                </form>
+                <p class="demo-auth-switch"><span id="switch-prompt">New to the demo?</span> <button id="toggle-register" class="link-button" type="button">Create a student account</button></p>
+                <p class="auth-note">Demo credentials and quiz records are stored in this browser only. Do not use real passwords.</p>
+            </section>
+        </main>
+        <footer class="site-footer auth-footer">Northstar Assessments <span>·</span> Browser-only demo</footer>
+    </section>
+
+    <div id="demo-app" class="hidden">
+        <header class="topbar">
+            <div class="topbar-inner">
+                <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">N</span><span>Northstar<span class="brand-light"> Assessments</span></span></a>
+                <div class="topbar-actions">
+                    <span class="demo-storage-badge"><span class="status-dot"></span> Browser demo · No database</span>
+                    <span id="demo-user-chip" class="user-chip"></span>
+                    <button id="demo-logout" class="button button-quiet button-small" type="button">Sign out</button>
+                </div>
+            </div>
+        </header>
+        <div class="demo-storage-strip"><span class="demo-storage-icon" aria-hidden="true">⌁</span> Demo mode: accounts and results are saved in this browser’s local storage. This is not production authentication.</div>
+
+        <main class="page-shell admin-shell">
+            <section id="admin-view" class="hidden">
+                <div class="page-heading admin-heading">
+                    <div><p class="eyebrow">Browser demo · Administrator</p><h1>Assessment workspace</h1><p class="subtle">Create a quiz, make a student account in another tab, then test the complete flow.</p></div>
+                    <button id="reset-demo" class="button button-secondary" type="button">Reset demo data</button>
+                </div>
+                <section class="stats-grid" aria-label="Demo overview">
+                    <article class="stat-card card"><span class="stat-icon stat-icon-violet" aria-hidden="true">◉</span><div><span class="stat-label">Students</span><strong id="demo-stat-students">0</strong><span class="stat-caption">Browser demo accounts</span></div></article>
+                    <article class="stat-card card"><span class="stat-icon stat-icon-blue" aria-hidden="true">▤</span><div><span class="stat-label">Assessments</span><strong id="demo-stat-quizzes">0</strong><span class="stat-caption">Stored in this browser</span></div></article>
+                    <article class="stat-card card"><span class="stat-icon stat-icon-green" aria-hidden="true">↗</span><div><span class="stat-label">Submissions</span><strong id="demo-stat-attempts">0</strong><span class="stat-caption">Completed demo attempts</span></div></article>
+                </section>
+                <section id="demo-builder" class="panel card">
+                    <div class="section-heading">
+                        <div><p class="eyebrow">Build and publish</p><h2>Create an assessment</h2><p class="subtle">This demo stores each quiz in your browser’s local storage.</p></div>
+                        <div class="step-indicator" aria-label="Builder step"><span id="demo-step-one" class="step-mark is-current">1</span><span class="step-line"></span><span id="demo-step-two" class="step-mark">2</span></div>
+                    </div>
+                    <div id="builder-message" class="alert hidden" role="alert" aria-live="polite"></div>
+                    <div id="demo-basics-step">
+                        <div class="builder-section-title"><span class="step-kicker">STEP 01</span><h3>Assessment details</h3></div>
+                        <div class="builder-fields">
+                            <label class="form-field form-field-wide"><span class="field-label">Assessment title <span class="required-mark">*</span></span><input class="text-input" id="demo-title" maxlength="180" required placeholder="e.g. Fundamentals of Science"></label>
+                            <label class="form-field form-field-wide"><span class="field-label">Description <span class="optional-label">Optional</span></span><textarea class="text-input textarea" id="demo-description" maxlength="10000" rows="3" placeholder="What will students learn or demonstrate?"></textarea></label>
+                            <label class="form-field"><span class="field-label">Time limit</span><span class="input-suffix"><input class="text-input" id="demo-time-limit" type="number" min="1" max="360" value="5" required><span>minutes</span></span></label>
+                        </div>
+                        <div class="builder-actions builder-actions-end"><button id="demo-continue" class="button button-primary" type="button">Continue to questions <span aria-hidden="true">→</span></button></div>
+                    </div>
+                    <div id="demo-questions-step" class="hidden">
+                        <div class="builder-section-title question-step-title"><div><span class="step-kicker">STEP 02</span><h3>Questions and choices</h3></div><p class="subtle">Each question needs at least two choices and one correct answer.</p></div>
+                        <div id="demo-question-list" class="builder-question-list"></div>
+                        <button id="demo-add-question" class="button button-dashed" type="button"><span aria-hidden="true">＋</span> Add another question</button>
+                        <div class="builder-actions"><button id="demo-back" class="button button-secondary" type="button"><span aria-hidden="true">←</span> Back</button><button id="demo-publish" class="button button-primary" type="button">Publish assessment <span aria-hidden="true">→</span></button></div>
+                    </div>
+                </section>
+                <section class="panel card results-panel">
+                    <div class="section-heading results-heading"><div><p class="eyebrow">Student outcomes</p><h2>Recent submissions</h2><p class="subtle">Demo results saved to local storage.</p></div></div>
+                    <div class="table-wrap"><table class="data-table"><thead><tr><th>Student</th><th>Assessment</th><th>Score</th><th>Result</th><th>Submitted</th></tr></thead><tbody id="demo-attempts-body"></tbody></table></div>
+                </section>
+            </section>
+
+            <section id="student-view" class="hidden">
+                <section id="demo-catalog-view">
+                    <div class="page-heading"><div><p class="eyebrow">Your demo workspace</p><h1>Assessment library</h1><p class="subtle">Choose an assessment. The countdown begins when you start.</p></div><div class="heading-note"><span class="status-dot"></span><span>Browser-only demo</span></div></div>
+                    <div id="demo-quiz-grid" class="quiz-grid"></div>
+                    <section class="panel card student-history" aria-labelledby="demo-student-history-title">
+                        <div class="section-heading results-heading"><div><p class="eyebrow">Your progress</p><h2 id="demo-student-history-title">Recent results</h2><p class="subtle">Your latest completed demo assessments, saved in this browser.</p></div></div>
+                        <div class="table-wrap"><table class="data-table"><thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Completed</th></tr></thead><tbody id="demo-student-history-body"></tbody></table></div>
+                    </section>
+                </section>
+                <section id="demo-runner-view" class="hidden" aria-labelledby="demo-runner-title">
+                    <div class="runner-toolbar"><button id="demo-back-catalog" class="button button-quiet" type="button"><span aria-hidden="true">←</span> Assessment library</button><div id="demo-timer-banner" class="timer-banner" role="timer" aria-live="off"><span class="timer-icon" aria-hidden="true">◷</span><span><span class="timer-caption">TIME LEFT</span><strong id="demo-timer">--:--</strong></span></div></div>
+                    <div class="runner-heading"><div><p class="eyebrow">Demo assessment in progress</p><h1 id="demo-runner-title"></h1><p id="demo-runner-description" class="subtle"></p></div><div class="progress-summary"><strong id="demo-progress-count">0 / 0</strong><span>questions answered</span></div></div>
+                    <progress id="demo-progress" class="progress-track" value="0" max="1" aria-label="Assessment questions answered"></progress>
+                    <div id="demo-question-render" class="question-list"></div>
+                    <div class="submit-bar card"><div><strong>Ready to finish?</strong><p class="subtle">This test demo calculates the score in your browser.</p></div><button id="demo-submit" class="button button-primary" type="button">Submit assessment <span aria-hidden="true">→</span></button></div>
+                </section>
+                <section id="demo-result-view" class="hidden" aria-labelledby="demo-result-title">
+                    <div class="result-card card"><div class="result-emblem" aria-hidden="true">✓</div><p class="eyebrow">Demo assessment complete</p><h1 id="demo-result-title">Your result is ready</h1><p id="demo-result-quiz" class="subtle"></p><div class="result-score"><strong id="demo-result-percent">0%</strong><span id="demo-result-marks">0 of 0 points</span></div><progress id="demo-result-meter" class="result-meter" value="0" max="100" aria-label="Demo assessment percentage score"></progress><p id="demo-result-feedback" class="result-feedback"></p><button id="demo-return-catalog" class="button button-primary" type="button">Return to assessment library <span aria-hidden="true">→</span></button></div>
+                </section>
+            </section>
+        </main>
+        <footer class="site-footer">Northstar Assessments <span>·</span> Browser-only demo — data is not sent to a server</footer>
+    </div>
+</body>
+</html>
