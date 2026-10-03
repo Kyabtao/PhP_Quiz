@@ -1,0 +1,17 @@
+Options -Indexes
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "^(schema\.sql|README\.md)$">
+        Require all denied
+    </FilesMatch>
+    <FilesMatch "^\.">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    <FilesMatch "^(schema\.sql|README\.md|\.)">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
