@@ -453,6 +453,34 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function renderStudentHistory() {
+        const body = document.getElementById('demo-student-history-body');
+        body.replaceChildren();
+        const attempts = data.attempts
+            .filter((attempt) => attempt.userId === activeUser.id)
+            .sort((first, second) => new Date(second.completedAt) - new Date(first.completedAt))
+            .slice(0, 25);
+        if (!attempts.length) {
+            const row = element('tr');
+            const cell = element('td', 'table-empty', 'You have not completed a demo assessment yet. Your results will appear here.');
+            cell.colSpan = 4;
+            row.append(cell);
+            body.append(row);
+            return;
+        }
+        attempts.forEach((attempt) => {
+            const row = element('tr');
+            row.append(element('td', 'assessment-cell', attempt.quizTitle));
+            row.append(element('td', 'score-cell', `${attempt.score} / ${attempt.totalScore}`));
+            const result = element('td');
+            const percentage = Number(attempt.percentage);
+            result.append(element('span', `badge ${percentage >= 80 ? 'badge-green' : percentage >= 50 ? 'badge-amber' : 'badge-slate'}`, `${percentage.toFixed(2).replace(/\.00$/, '')}%`));
+            const date = new Date(attempt.completedAt);
+            row.append(result, element('td', 'date-cell', Number.isNaN(date.getTime()) ? '' : new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(date)));
+            body.append(row);
+        });
+    }
+
     function renderStudentCatalog() {
         const grid = document.getElementById('demo-quiz-grid');
         grid.replaceChildren();
@@ -460,6 +488,7 @@
             const empty = element('div', 'empty-state card');
             empty.append(element('span', 'empty-mark', '✦'), element('h2', '', 'No demo assessments yet'), element('p', 'subtle', 'Sign out and use the sample administrator to create a quiz in this browser.'));
             grid.append(empty);
+            renderStudentHistory();
             return;
         }
         const savedAttempt = readActiveAttempt();
@@ -489,6 +518,7 @@
             card.append(icon, content, action);
             grid.append(card);
         });
+        renderStudentHistory();
     }
 
     function readActiveAttempt() {
@@ -634,6 +664,7 @@
 
     function showResult(attempt) {
         clearInterval(timerHandle);
+        renderStudentHistory();
         activeQuiz = null;
         activeAttempt = null;
         document.getElementById('demo-runner-view').classList.add('hidden');
@@ -732,6 +763,31 @@
             removeQuestion.closest('.builder-question').remove();
             updateQuestionNumbers();
             clearMessage(builderMessage);
+        }
+    });
+
+    window.addEventListener('storage', (event) => {
+        if (event.key !== STORE_KEY) return;
+        try {
+            data = loadData();
+            if (!activeUser) return;
+            const refreshedUser = data.users.find((user) => user.id === activeUser.id);
+            if (!refreshedUser) {
+                sessionStorage.removeItem(SESSION_KEY);
+                activeUser = null;
+                showAuthentication();
+                initialize();
+                return;
+            }
+            activeUser = refreshedUser;
+            if (activeUser.role === 'admin') {
+                renderAdminDashboard();
+            } else {
+                renderStudentCatalog();
+                renderStudentHistory();
+            }
+        } catch (error) {
+            window.alert(error.message || 'Could not refresh the browser demo data.');
         }
     });
 

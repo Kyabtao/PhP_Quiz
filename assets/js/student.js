@@ -90,18 +90,57 @@
         });
     }
 
+    function renderHistory(attempts, errorMessage = '') {
+        const body = document.getElementById('student-attempts-body');
+        body.replaceChildren();
+        if (errorMessage) {
+            const row = element('tr');
+            const cell = element('td', 'table-empty', errorMessage);
+            cell.colSpan = 4;
+            row.append(cell);
+            body.append(row);
+            return;
+        }
+        if (!attempts.length) {
+            const row = element('tr');
+            const cell = element('td', 'table-empty', 'You have not submitted an assessment yet. Your results will appear here.');
+            cell.colSpan = 4;
+            row.append(cell);
+            body.append(row);
+            return;
+        }
+        attempts.forEach((attempt) => {
+            const row = element('tr');
+            row.append(element('td', 'assessment-cell', attempt.quiz_title));
+            row.append(element('td', 'score-cell', `${attempt.score} / ${attempt.total_score}`));
+            const resultCell = element('td');
+            const percentage = Number(attempt.percentage);
+            resultCell.append(element('span', `badge ${percentage >= 80 ? 'badge-green' : percentage >= 50 ? 'badge-amber' : 'badge-slate'}`, `${percentage.toFixed(2).replace(/\.00$/, '')}%`));
+            const date = new Date(String(attempt.completed_at).replace(' ', 'T'));
+            row.append(resultCell, element('td', 'date-cell', Number.isNaN(date.getTime()) ? attempt.completed_at : new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(date)));
+            body.append(row);
+        });
+    }
+
     async function loadCatalog() {
         grid.replaceChildren();
         const loading = element('div', 'loading-card card');
         loading.append(element('span', 'spinner'), element('span', '', 'Loading assessments…'));
         grid.append(loading);
-        try {
-            const data = await getJson('api/quizzes.php');
+        const catalogRequest = getJson('api/quizzes.php');
+        const historyRequest = getJson('api/my-attempts.php');
+        const [catalogResult, historyResult] = await Promise.allSettled([catalogRequest, historyRequest]);
+        if (catalogResult.status === 'fulfilled') {
             hideAlert(catalogMessage);
-            renderCatalog(data.quizzes || []);
-        } catch (error) {
+            renderCatalog(catalogResult.value.quizzes || []);
+        } else {
             grid.replaceChildren();
-            showAlert(catalogMessage, error.message || 'Assessments could not be loaded.');
+            showAlert(catalogMessage, catalogResult.reason.message || 'Assessments could not be loaded.');
+        }
+        if (historyResult.status === 'fulfilled') {
+            renderHistory(historyResult.value.attempts || []);
+        } else {
+            renderHistory([], historyResult.reason.message || 'Your results could not be loaded.');
         }
     }
 

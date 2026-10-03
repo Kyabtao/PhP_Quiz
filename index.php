@@ -50,6 +50,17 @@ header('Cache-Control: no-store, private');
             <div id="quiz-grid" class="quiz-grid" aria-live="polite">
                 <div class="loading-card card"><span class="spinner" aria-hidden="true"></span><span>Loading assessments…</span></div>
             </div>
+            <section class="panel card student-history" aria-labelledby="student-history-title">
+                <div class="section-heading results-heading">
+                    <div><p class="eyebrow">Your progress</p><h2 id="student-history-title">Recent results</h2><p class="subtle">Your latest completed assessments, visible only to you.</p></div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead><tr><th>Assessment</th><th>Score</th><th>Result</th><th>Completed</th></tr></thead>
+                        <tbody id="student-attempts-body"><tr><td class="table-loading" colspan="4">Loading your results…</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
         </section>
 
         <section id="runner-view" class="hidden" aria-labelledby="runner-title">

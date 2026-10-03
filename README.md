@@ -43,7 +43,7 @@ A self-hosted quiz and assessment application built with native PHP, PDO/MySQL, 
 - Session-based sign-in/sign-out with role guards for students and administrators, password hashing, CSRF protection, session ID rotation, and secure cookie settings.
 - Admin dashboard with student/assessment/submission counts and a recent-attempt results table.
 - Two-step assessment builder with add/remove questions and choices, per-question points, a single correct-choice radio, validation, and transactional publishing.
-- Student assessment catalog with duration, question count, points, responsive quiz runner, answer tracking, countdown, automatic timeout submission, and result display.
+- Student assessment catalog with duration, question count, points, responsive quiz runner, answer tracking, countdown, automatic timeout submission, immediate results, and a private history of the student’s recent attempts.
 - Server-side scoring against database answer keys. Correct-answer flags are excluded from student API responses.
 - MySQL persistence for accounts, assessments, questions, choices, and attempts, plus CLI tools to add accounts and rotate passwords.
 - Self-hosted dark UI, responsive forms, keyboard-visible focus states, status messages, tables, badges, and countdown indicators. No external runtime assets.
@@ -52,7 +52,7 @@ A self-hosted quiz and assessment application built with native PHP, PDO/MySQL, 
 
 - Separate static demo at `docs/index.html`; it does not call PHP or connect to MySQL.
 - Browser demo administrator plus student self-registration/sign-in. Demo passwords are PBKDF2/SHA-256 hashed with a per-account salt using the browser Web Crypto API.
-- Assessment builder, stored quizzes, timed student runner, result calculation, and admin attempt overview.
+- Assessment builder, stored quizzes, timed student runner, result calculation, student attempt history, and admin attempt overview with cross-tab storage updates.
 - Accounts, quizzes, and results are stored in this browser’s `localStorage`; the signed-in session and in-progress answers use `sessionStorage`.
 - Demo data is local to the browser/origin and is editable by the user. It is for UI/workflow testing only—not secure authentication, grading, or production use. Never enter a real password or sensitive data.
 
@@ -204,6 +204,7 @@ All API responses are JSON. Mutating requests require the session-bound CSRF tok
 - `POST api/quizzes.php` with `{"action":"create", ...}`: administrator-only transactional assessment creation, including questions and choices.
 - `POST api/submit.php`: student-only answer submission. Scores are calculated on the server against the database answer key and persisted in `attempts`.
 - `GET api/attempts.php`: administrator-only recent results and overview counts.
+- `GET api/my-attempts.php`: returns only the signed-in student’s 25 most recent results.
 
 ## Operational notes
 
